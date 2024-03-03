@@ -14,12 +14,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-
-
 from django.urls import path
-from sum_app.views import sum_numbers
+from sum_app import views  # Certifique-se de que a importação de 'views' está presente e correta
 
 urlpatterns = [
-    path('sum/<int:num1>/<int:num2>/', sum_numbers, name='sum_numbers'),
+    path('sum', views.sum_numbers, name='sum_numbers'),
 ]
