@@ -1,23 +1,9 @@
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
 from django.shortcuts import render
 
 def result_page(request):
     return render(request, 'result.html')
-
-
-def sum_numbers(request):
-    num1 = request.POST.get('num1')
-    num2 = request.POST.get('num2')
-    print(f'num1: {num1}, num2: {num2}')  # Adicione esta linha para depuração
-    result = None
-    
-    if num1 is not None and num2 is not None:
-        result = int(num1) + int(num2)
-    
-    return HttpResponse(f'A soma de {num1} e {num2} é {result}.')
-from django.http import JsonResponse
 
 @csrf_exempt
 def sum_numbers(request):
@@ -28,11 +14,16 @@ def sum_numbers(request):
         
         if num1 is not None and num2 is not None:
             try:
-                result = int(num1) + int(num2)
-                return JsonResponse({'result': result})
+                num1 = int(num1)
+                num2 = int(num2)
+                result = num1 + num2
+                return render(request, 'result.html', {'num1': num1, 'num2': num2, 'result': result})
             except ValueError:
-                return JsonResponse({'error': 'Os valores informados não são números válidos.'}, status=400)
+                error_message = 'Os valores informados não são números válidos.'
+                return render(request, 'result.html', {'error': error_message})
         else:
-            return JsonResponse({'error': 'Por favor, forneça dois números.'}, status=400)
+            error_message = 'Por favor, forneça dois números.'
+            return render(request, 'result.html', {'error': error_message})
     else:
-        return JsonResponse({'error': 'Método não permitido.'}, status=405)
+        error_message = 'Método não permitido.'
+        return render(request, 'result.html', {'error': error_message})
